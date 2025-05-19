@@ -1,0 +1,1076 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "MeterZ Public API",
+        "description": "## Quick Start Guide\\n1. Select the appropriate server from the list below.\\n2. Authorize using the api key provided to you from the MeterZ team.\\n2. Make a `GET /v1/organisations` request (under the Organisation section) to get a list of available organisations.\\n3. Obtain the valid `organisation_id` in which you can get data for.\\n4. This `organisation_id` will be required for all other reoccurring requests.\\n",
+        "contact": {
+            "name": "Meterz Support",
+            "email": "support@meterz.co.uk"
+        },
+        "version": "v1"
+    },
+    "servers": [
+        { "url": "https://api.meterz.co.uk" },
+        { "url": "https://dev-api.meterz.co.uk" }
+    ],
+    "paths": {
+        "/v1/organisations": {
+            "get": {
+                "tags": ["Organisation"],
+                "description": "List all organisations linked to this API key",
+                "summary": "Retrieve details for all organisations linked to this API key",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/organisationsSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/organistaionsKeyNotLinked"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}": {
+            "get": {
+                "tags": ["Organisation"],
+                "description": "Method to retrieve specific organisation information",
+                "summary": "Retrieve organisation details",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/organisationSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}/sites/{site_id}/meters": {
+            "get": {
+                "tags": ["Meter"],
+                "description": "List all meters assosiated to a site",
+                "summary": "Retrieve all meters for a site",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "$ref": "#/components/schemas/uuid" }
+                    },
+                    {
+                        "name": "site_id",
+                        "in": "path",
+                        "description": "UUID of the site ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "last_evaluated_key",
+                        "in": "query",
+                        "description": "Use this query parameter if the response body returns a last_evaluated_key value. If the last evaluated key is not empty, there are more results to retrieve.",
+                        "required": false,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "items_per_page",
+                        "in": "query",
+                        "description": "Specify the number of items to return in each response. Default is 50",
+                        "required": false,
+                        "example": 25,
+                        "schema": { "type": "integer" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "200 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/organisationMetersSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}/sites/{site_id}/meters/{meter_id}/readings": {
+            "get": {
+                "tags": ["Reading"],
+                "description": "Get past meter readings up to 6 months old. This method uses cursor based pagination.",
+                "summary": "Retrieve past meter readings",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "site_id",
+                        "in": "path",
+                        "description": "UUID of the site ID",
+                        "required": true,
+                        "example": "291c809c-cbf6-407b-8a8f-e8fd1f819027",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "meter_id",
+                        "in": "path",
+                        "description": "UUID of the meter ID",
+                        "required": true,
+                        "example": "506a5c5f-0b1f-4cb1-9dc2-42a172066f0a",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "last_evaluated_key",
+                        "in": "query",
+                        "description": "Use this query parameter if the response body returns a last_evaluated_key value. If the last evaluated key is not empty, there are more results to retrieve.",
+                        "required": false,
+                        "example": "2023-09-19T09:03:42.415Z",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "items_per_page",
+                        "in": "query",
+                        "description": "Specify the number of items to return in each response.",
+                        "required": false,
+                        "example": 25,
+                        "schema": { "type": "integer", "default": 50 }
+                    },
+                    {
+                        "name": "start_datetime",
+                        "in": "query",
+                        "description": "Specify the starting date and time to return readings from.  If no end_datetime query is provided to the request, the response  will provide all available readings from the start date time up until 6 months old from the current datetime.  ",
+                        "required": false,
+                        "example": "2023-09-19T09:02:44.000Z",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "end_datetime",
+                        "in": "query",
+                        "description": "Specify the end date and time to return readings to.  If no start_datetime query is provided to the request,  the response will provide all available readings from  the end date time up until the current datetime.  ",
+                        "required": false,
+                        "example": "2023-09-19T09:02:44.000Z",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "interval",
+                        "in": "query",
+                        "description": "Specify the aggregation interval of the readings in the response. The aggregation is the average of all the values in a time window with a size being the interval  ",
+                        "required": false,
+                        "example": 30,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "enum": [15, 30, 60]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/readingsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}/sites/{site_id}/meters/{meter_id}": {
+            "get": {
+                "tags": ["Meter"],
+                "description": "Get meter specific details",
+                "summary": "Retrieve meter details",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "site_id",
+                        "in": "path",
+                        "description": "UUID of the site ID",
+                        "required": true,
+                        "example": "291c809c-cbf6-407b-8a8f-e8fd1f819027",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "meter_id",
+                        "in": "path",
+                        "description": "UUID of the meter ID",
+                        "required": true,
+                        "example": "506a5c5f-0b1f-4cb1-9dc2-42a172066f0a",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/meterResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}/sites/{site_id}/meters/{meter_id}/reading": {
+            "get": {
+                "tags": ["Reading"],
+                "description": "Get the latest reading for the specified meter",
+                "summary": "Retrieve last reading for a meter",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "site_id",
+                        "in": "path",
+                        "description": "UUID of the site ID",
+                        "required": true,
+                        "example": "291c809c-cbf6-407b-8a8f-e8fd1f819027",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "meter_id",
+                        "in": "path",
+                        "description": "UUID of the meter ID",
+                        "required": true,
+                        "example": "506a5c5f-0b1f-4cb1-9dc2-42a172066f0a",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/readingResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}/sites/{site_id}/reading": {
+            "get": {
+                "tags": ["Reading"],
+                "description": "Get the latest reading for all meters associated to a site.",
+                "summary": "Retrieve latest readings of all meters in a site",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "site_id",
+                        "in": "path",
+                        "description": "UUID of the site ID",
+                        "required": true,
+                        "example": "291c809c-cbf6-407b-8a8f-e8fd1f819027",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/siteReadingResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}/sites": {
+            "get": {
+                "tags": ["Site"],
+                "description": "List all the sites associated with this organisation ID",
+                "summary": "Retrieve all sites for an organisation",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "last_evaluated_key",
+                        "in": "query",
+                        "description": "Use this query parameter if the response body returns a last_evaluated_key value. If the last evaluated key is not empty, there are more results to retrieve.",
+                        "required": false,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "items_per_page",
+                        "in": "query",
+                        "description": "Specify the number of items to return in each response. Default is 50",
+                        "required": false,
+                        "example": 25,
+                        "schema": { "type": "integer" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/organisationSitesSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}/meters": {
+            "get": {
+                "tags": ["Meter"],
+                "description": "List all meters associated with this organisation ID. This method uses cursor based pagination.",
+                "summary": "Retrieve all meters for an organisation",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "last_evaluated_key",
+                        "in": "query",
+                        "description": "Use this query parameter if the response body returns a last_evaluated_key value. If the last evaluated key is not empty, there are more results to retrieve.",
+                        "required": false,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "items_per_page",
+                        "in": "query",
+                        "description": "Specify the number of items to return in each response. Default is 50",
+                        "required": false,
+                        "example": 25,
+                        "schema": { "type": "integer" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/organisationMetersSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        },
+        "/v1/organisations/{organisation_id}/sites/{site_id}": {
+            "get": {
+                "tags": ["Site"],
+                "description": "Retrieve site specific details",
+                "summary": "Retrieve site details",
+                "parameters": [
+                    {
+                        "name": "organisation_id",
+                        "in": "path",
+                        "description": "UUID of the organisation ID",
+                        "required": true,
+                        "example": "9bb2dd2b-05bd-4e34-97fb-2249e687630b",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "site_id",
+                        "in": "path",
+                        "description": "UUID of the site ID",
+                        "required": true,
+                        "example": "291c809c-cbf6-407b-8a8f-e8fd1f819027",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/siteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorised"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/internalServerError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "ApiKeyAuth": [] }]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "organisationsSuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "organisations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "organisation_id": {
+                                    "type": "string",
+                                    "example": "ba0346b3-e30e-4aa4-9f58-ed0391a82d3d"
+                                },
+                                "organisation_name": {
+                                    "type": "string",
+                                    "example": "MeterZ"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "organisationMetersSuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "meters": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/meterResponse"
+                        }
+                    },
+                    "more_items_to_return": { "type": "boolean" },
+                    "last_evaluated_key": { "type": "string" },
+                    "next_page_url": { "type": "string" }
+                }
+            },
+            "organisationSitesSuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "sites": {
+                        "type": "array",
+                        "items": { "$ref": "#/components/schemas/siteResponse" }
+                    },
+                    "more_items_to_return": { "type": "boolean" },
+                    "last_evaluated_key": { "type": "string" },
+                    "next_page_url": { "type": "string" }
+                }
+            },
+            "siteResponse": {
+                "type": "object",
+                "properties": {
+                    "site_id": { "type": "string" },
+                    "site_name": { "type": "string" },
+                    "size_sqft": { "type": "string" },
+                    "type": { "type": "string" },
+                    "postcode": { "type": "string" },
+                    "street_address": { "type": "string" },
+                    "organisation_name": { "type": "string" },
+                    "organisation_id": { "type": "string" }
+                }
+            },
+            "meterResponse": {
+                "type": "object",
+                "properties": {
+                    "meter_id": { "type": "string" },
+                    "meter_name": { "type": "string" },
+                    "meter_type": { "type": "string" },
+                    "meter_properties": {
+                        "type": "object",
+                        "properties": {
+                            "phase": { "type": "string" },
+                            "reading_frequency_minutes": { "type": "string" },
+                            "voltage_volts": { "type": "string" }
+                        },
+                        "required": [
+                            "phase",
+                            "reading_frequency_minutes",
+                            "voltage_volts"
+                        ]
+                    },
+                    "organisation_name": { "type": "string" },
+                    "organisation_id": { "type": "string" },
+                    "site_id": { "type": "string" },
+                    "site_name": { "type": "string" }
+                }
+            },
+            "readingResponse": {
+                "type": "object",
+                "properties": {
+                    "meter_name": { "type": "string" },
+                    "meter_id": { "type": "string" },
+                    "meter_type": { "type": "string" },
+                    "reading_timestamp": { "type": "string" },
+                    "readings": {
+                        "type": "object",
+                        "properties": {
+                            "accumulated_kilowatt_hours": { "type": "string" },
+                            "current_amperage": { "type": "string" },
+                            "power_watts": { "type": "string" }
+                        },
+                        "required": [
+                            "accumulated_kilowatt_hours",
+                            "current_amperage",
+                            "power_watts"
+                        ]
+                    }
+                }
+            },
+            "readingsResponse": {
+                "type": "object",
+                "properties": {
+                    "readings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/readingResponse"
+                        }
+                    },
+                    "count": { "type": "number" },
+                    "more_items_to_return": { "type": "boolean" },
+                    "last_evaluated_key": { "type": "string" },
+                    "next_page_url": { "type": "string" }
+                }
+            },
+            "siteReadingResponse": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/readingResponse" }
+            },
+            "notAuthenticated": {
+                "type": "object",
+                "properties": {
+                    "Message": {
+                        "type": "string",
+                        "example": "User is not authorized to access this resource with an explicit deny"
+                    }
+                }
+            },
+            "badRequest": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "Bad Request. Organisation ID is missing from the path parameter."
+                    },
+                    "correlation_id": { "$ref": "#/components/schemas/uuid" }
+                }
+            },
+            "notFound": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "Not Found, no organisation found with this ID."
+                    },
+                    "correlation_id": { "$ref": "#/components/schemas/uuid" }
+                }
+            },
+            "unauthorised": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "Unauthorised. API key not linked to this Organisation ID."
+                    },
+                    "correlation_id": { "$ref": "#/components/schemas/uuid" }
+                }
+            },
+            "organistaionsKeyNotLinked": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "Not Found, no organisations is linked to this api key. Please contact meterz support team."
+                    },
+                    "correlation_id": { "$ref": "#/components/schemas/uuid" }
+                }
+            },
+            "internalServerError": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "Internal Server Error"
+                    },
+                    "correlation_id": { "$ref": "#/components/schemas/uuid" }
+                }
+            },
+            "uuid": {
+                "type": "string",
+                "example": "ba0346b3-e30e-4aa4-9f58-ed0391a82d3d"
+            },
+            "organisationSuccessResponse": {
+                "properties": {
+                    "organisation_id": {
+                        "type": "string",
+                        "example": "ba0346b3-e30e-4aa4-9f58-ed0391a82d3d"
+                    },
+                    "organisation_name": {
+                        "type": "string",
+                        "example": "MeterZ"
+                    }
+                }
+            },
+            "organisationsNotFound": { "type": "object" }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "name": "x-api-key",
+                "in": "header",
+                "x-amazon-apigateway-authtype": "custom"
+            }
+        }
+    }
+}
